@@ -1632,6 +1632,8 @@ runs:
           
           cp "$COMMON_KERNEL_FOLDER/out/vmlinux" "$DEBUG_ARTIFACTS_FOLDER/vmlinux"
           cp build.log "$DEBUG_ARTIFACTS_FOLDER/build.log"
+          
+          ls -l "$DEBUG_ARTIFACTS_FOLDER"
         else
           make -j"$(nproc --all)" O="$OUT" KCFLAGS="$KCFLAGS" KCPPFLAGS="$KCPPFLAGS" Image 2>&1 | tee build.log
         fi
