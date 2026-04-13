@@ -1610,7 +1610,7 @@ runs:
         BUILD_START=$(date +%s)
         set -o pipefail
         
-        if [ "${{ inputs.debug }}" = "true" ]; then
+        if [ "${{ inputs.debug }}" == true ]; then
           make -j"$(nproc --all)" O="$OUT" KCFLAGS="$KCFLAGS" KCPPFLAGS="$KCPPFLAGS" Image modules 2>&1 | tee build.log
           
           SYMVERS_SRC=""
@@ -1963,7 +1963,7 @@ runs:
         } >> "$GITHUB_STEP_SUMMARY"
 
     - name: Upload Debug Artifacts
-      if: ${{ inputs.debug == true && always() }}
+      if: ${{ !cancelled() && inputs.debug == true }}
       uses: actions/upload-artifact@v7
       with:
         name: ${{ env.DEBUG_ZIP_NAME }}
