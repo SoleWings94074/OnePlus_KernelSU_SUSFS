@@ -686,7 +686,7 @@ runs:
         echo "::endgroup::"
 
     - name: Handle Clean Build Option
-      if: ${{ inputs.clean == 'true' }}
+      if: ${{ inputs.clean }}
       shell: bash
       run: |
         set -euo pipefail
@@ -1610,7 +1610,7 @@ runs:
         BUILD_START=$(date +%s)
         set -o pipefail
         
-        if [ "${{ inputs.debug }}" == true ]; then
+        if [ "${{ inputs.debug }}" == "true" ]; then
           make -j"$(nproc --all)" O="$OUT" KCFLAGS="$KCFLAGS" KCPPFLAGS="$KCPPFLAGS" Image modules 2>&1 | tee build.log
           
           SYMVERS_SRC=""
@@ -1671,7 +1671,7 @@ runs:
 
     - name: 📊 ccache Post-Build Statistics
       id: ccache_stats
-      if: ${{ always() && inputs.clean != 'true' }}
+      if: ${{ always() && inputs.clean != true }}
       shell: bash
       run: |
         set -euo pipefail
@@ -1964,13 +1964,13 @@ runs:
 
     - name: Debug Check
       shell: bash
-      if: ${{ inputs.debug == true }}
+      if: ${{ inputs.debug }}
       run: |
         echo "Checking path: ${{ env.DEBUG_ARTIFACTS_FOLDER }}"
         ls -R "${{ env.DEBUG_ARTIFACTS_FOLDER }}" || echo "Folder not found!"
 
     - name: Upload Debug Artifacts
-      if: ${{ always() && !cancelled() && inputs.debug == true }}
+      if: ${{ always() && !cancelled() && inputs.debug }}
       uses: actions/upload-artifact@v7
       with:
         name: ${{ env.DEBUG_ZIP_NAME }}
