@@ -1628,7 +1628,7 @@ runs:
           
           make -j"$(nproc --all)" O="$COMMON_KERNEL_FOLDER/out" KCFLAGS="$KCFLAGS" KCPPFLAGS="$KCPPFLAGS" INSTALL_MOD_PATH="$COMMON_KERNEL_FOLDER/out/install" modules_install 2>&1 | tee build.log
           
-          cp -r "$COMMON_KERNEL_FOLDER/out/install" "$DEBUG_ARTIFACTS_FOLDER/install"
+          cp -r "$COMMON_KERNEL_FOLDER/out/install" "$DEBUG_ARTIFACTS_FOLDER"
           
           cp "$COMMON_KERNEL_FOLDER/out/vmlinux" "$DEBUG_ARTIFACTS_FOLDER/vmlinux"
           cp build.log "$DEBUG_ARTIFACTS_FOLDER/build.log"
@@ -1962,8 +1962,15 @@ runs:
           echo "| **AnyKernel3 SHA256** | \`${{ steps.create_zip.outputs.zip_sha256 }}\` |"
         } >> "$GITHUB_STEP_SUMMARY"
 
+    - name: Debug Check
+      shell: bash
+      if: ${{ inputs.debug == true }}
+      run: |
+        echo "Checking path: ${{ env.DEBUG_ARTIFACTS_FOLDER }}"
+        ls -R "${{ env.DEBUG_ARTIFACTS_FOLDER }}" || echo "Folder not found!"
+
     - name: Upload Debug Artifacts
-      if: ${{ !cancelled() && inputs.debug == true }}
+      if: ${{ always() && !cancelled() && inputs.debug == true }}
       uses: actions/upload-artifact@v7
       with:
         name: ${{ env.DEBUG_ZIP_NAME }}
