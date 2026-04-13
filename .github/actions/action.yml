@@ -1962,6 +1962,16 @@ runs:
           echo "| **AnyKernel3 SHA256** | \`${{ steps.create_zip.outputs.zip_sha256 }}\` |"
         } >> "$GITHUB_STEP_SUMMARY"
 
+    - name: Upload Debug Artifacts
+      if: ${{ inputs.debug == true && always() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ env.DEBUG_ZIP_NAME }}
+        path: ${{ env.DEBUG_ARTIFACTS_FOLDER }}
+        compression-level: 9
+        retention-days: 90
+
+
     - name: Upload Artifacts
       if: success() && steps.create_zip.conclusion == 'success'
       uses: actions/upload-artifact@v7
@@ -1970,13 +1980,4 @@ runs:
         path: ${{ env.ARTIFACTS_FOLDER }}/${{ env.ZIP_NAME }}
         archive: false
         compression-level: 0
-        retention-days: 90
-
-    - name: Upload Debug Artifacts
-      if: ${{ inputs.debug == true && always() }}
-      uses: actions/upload-artifact@v7
-      with:
-        name: ${{ env.DEBUG_ZIP_NAME }}
-        path: ${{ env.DEBUG_ARTIFACTS_FOLDER }}
-        compression-level: 9
         retention-days: 90
